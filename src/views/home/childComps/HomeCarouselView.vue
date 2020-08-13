@@ -10,7 +10,7 @@
   </div>
 </template>
 
-<script>
+<script >
   export default {
     name: "HomeCarouselView",
     props: {
@@ -24,5 +24,9 @@
   }
 </script>
 
-<style>
+<style scoped>
+  .block img{
+    width: 100%;
+  }
+  
 </style>

@@ -4,16 +4,21 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <!-- 轮播 -->
-    <home-carousel-view :banners="banners" />
-    <!-- 推荐面板1 -->
-    <home-avatar-view :recommends="recommends" />
-    <!-- 推荐面板2 -->
-    <feature-view />
-    <!-- 控制栏 -->
-    <tab-control class="tab-control" :tabControlText="tabControlText" @tabClick="tabClick"/>
-    <!-- 商品列表 -->
-    <good-list :pop="goods[currentType].list" />
+    <!-- 滚动组件 -->
+    <b-scroll class="content" ref="scroll">
+      <!-- 轮播 -->
+      <home-carousel-view :banners="banners" />
+      <!-- 推荐面板1 -->
+      <home-avatar-view :recommends="recommends" />
+      <!-- 推荐面板2 -->
+      <feature-view />
+      <!-- 控制栏 -->
+      <tab-control class="tab-control" :tabControlText="tabControlText" @tabClick="tabClick"/>
+      <!-- 商品列表 -->
+      <good-list :pop="showGoods" />
+    </b-scroll>
+    <!-- 回到顶部组件 -->
+    <back-top @click.native="topClick" />
   </div>
 </template>
 
@@ -24,6 +29,9 @@
   import FeatureView from './childComps/FeatureView.vue';
   import TabControl from 'components/content/tabControl/TabControl.vue';
   import GoodList from 'components/content/goods/GoodList.vue';
+  import BScroll from 'components/common/betterScroll/BetterScroll.vue'
+  import BackTop from 'components/content/backTop/BackTop.vue'
+
   import {
     getHomeMultidata,
     getHomeData
@@ -37,7 +45,9 @@
       HomeCarouselView,
       FeatureView,
       TabControl,
-      GoodList
+      GoodList,
+      BScroll,
+      BackTop
     },
     data() {
       return {
@@ -50,6 +60,11 @@
           'sell':{page: 0, list:[]},
         },
         currentType:'pop'
+      }
+    },
+    computed:{
+      showGoods(){
+        return this.goods[this.currentType].list
       }
     },
     //生命周期函数 创建完成时请求
@@ -89,14 +104,18 @@
             break
         }
       },
+      topClick(){
+        this.$refs.scroll.scrollTo(0,0,1000)
+      }
     }
   }
 </script>
 
-<style>
+<style scoped>
   .home {
     color: #FFFFFF;
-    padding-top: 44px;
+    height: 100vh;
+    margin-top: 44px;
   }
   .home-nav{
     z-index: 9;
@@ -111,5 +130,10 @@
   .tab-control{
     position: sticky;
     top: 44px;
+  }
+  .content{
+    height: calc(100% - 93px);
+    overflow: hidden;
+
   }
 </style>
