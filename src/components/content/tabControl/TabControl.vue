@@ -28,6 +28,7 @@
     methods:{
       itemStyle(index){
         this.isShowIndex = index
+        this.$emit('tabClick', index)
       }
     }
   }

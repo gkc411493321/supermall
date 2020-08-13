@@ -1,10 +1,10 @@
 <template>
-  <el-row :gutter="2">
+  <el-row class="list" :gutter="2">
     <!-- <el-col class="card" :span="12" v-for=" item in pop">
       <good-item v-for="item in pop" :goodItem="item" />
     </el-col> -->
-    <good-item v-for="item in pop" :goodItem="item" />
-    
+    <good-item  v-for="item in pop" :goodItem="item" :key="item.show.img" />
+
   </el-row>
 </template>
 
@@ -28,4 +28,7 @@
 </script>
 
 <style>
+  .list{
+    width: 100%;
+  }
 </style>

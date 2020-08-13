@@ -11,9 +11,9 @@
     <!-- 推荐面板2 -->
     <feature-view />
     <!-- 控制栏 -->
-    <tab-control class="tab-control" :tabControlText="tabControlText"/>
+    <tab-control class="tab-control" :tabControlText="tabControlText" @tabClick="tabClick"/>
     <!-- 商品列表 -->
-    <good-list :pop="goods.pop.list" />
+    <good-list :pop="goods[currentType].list" />
   </div>
 </template>
 
@@ -48,7 +48,8 @@
           'pop':{page: 0, list:[]},
           'new':{page: 0, list:[]},
           'sell':{page: 0, list:[]},
-        }
+        },
+        currentType:'pop'
       }
     },
     //生命周期函数 创建完成时请求
@@ -69,12 +70,24 @@
         })
       },
       getHomeData(type){
-        const page = this.goods[type].page+1
+        const page = this.goods[type].page + 1
         getHomeData(type, page).then(res => {
           this.goods[type].page = page
           this.goods[type].list.push(...res.data.list)
-          console.log(this.goods)
         })
+      },
+      tabClick(index){
+        switch (index){
+          case 0:
+            this.currentType = "pop"
+            break
+          case 1:
+            this.currentType = "new"
+            break
+          case 2:
+            this.currentType = "sell"
+            break
+        }
       },
     }
   }
