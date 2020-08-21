@@ -4,21 +4,26 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
+    <!-- 控制栏吸顶效果 -->
+    <tab-control class="tab-control tab-active" :tabControlText="tabControlText"
+      @tabClick="tabClick" ref="tabOffSetControl" v-show="isShowTab"/>
     <!-- 滚动组件 -->
-    <b-scroll class="content" ref="scroll">
+    <b-scroll class="content" ref="scroll" :probe-type="3" :pull-up-load="true"
+      @pullingUp="pullingUp" @scroll="contentScroll">
       <!-- 轮播 -->
-      <home-carousel-view :banners="banners" />
+      <home-carousel-view :banners="banners" @imgLoad="imgLoad"/>
       <!-- 推荐面板1 -->
       <home-avatar-view :recommends="recommends" />
       <!-- 推荐面板2 -->
       <feature-view />
       <!-- 控制栏 -->
-      <tab-control class="tab-control" :tabControlText="tabControlText" @tabClick="tabClick"/>
+      <tab-control class="tab-control" :tabControlText="tabControlText"
+        @tabClick="tabClick" ref="tabOffSetControl" v-show="!isShowTab"/>
       <!-- 商品列表 -->
       <good-list :pop="showGoods" />
     </b-scroll>
     <!-- 回到顶部组件 -->
-    <back-top @click.native="topClick" />
+    <back-top v-show="btnTopShow" @click.native="topClick" />
   </div>
 </template>
 
@@ -59,7 +64,10 @@
           'new':{page: 0, list:[]},
           'sell':{page: 0, list:[]},
         },
-        currentType:'pop'
+        currentType:'pop',
+        btnTopShow: false,
+        tabOffSetTop: 0,
+        isShowTab: false
       }
     },
     computed:{
@@ -89,6 +97,7 @@
         getHomeData(type, page).then(res => {
           this.goods[type].page = page
           this.goods[type].list.push(...res.data.list)
+          this.$refs.scroll.finishPullUp()
         })
       },
       tabClick(index){
@@ -104,8 +113,19 @@
             break
         }
       },
+      contentScroll(position){
+         this.btnTopShow = position.y < -500
+         this.isShowTab = -position.y > this.tabOffSetTop-80
+      },
       topClick(){
         this.$refs.scroll.scrollTo(0,0,1000)
+      },
+      pullingUp(){
+        this.getHomeData(this.currentType)
+        this.$refs.scroll.refresh()
+      },
+      imgLoad(){
+        this.tabOffSetTop = this.$refs.tabOffSetControl.$el.offsetTop
       }
     }
   }
@@ -127,13 +147,14 @@
   .block img {
     width: 100%;
   }
-  .tab-control{
-    position: sticky;
-    top: 44px;
-  }
   .content{
     height: calc(100% - 93px);
     overflow: hidden;
-
+  }
+  .tab-active{
+    position: fixed;
+    top: 44px;
+    left: 0;
+    width: 100%;
   }
 </style>

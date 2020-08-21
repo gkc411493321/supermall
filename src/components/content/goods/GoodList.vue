@@ -3,7 +3,7 @@
     <!-- <el-col class="card" :span="12" v-for=" item in pop">
       <good-item v-for="item in pop" :goodItem="item" />
     </el-col> -->
-    <good-item  v-for="item in pop" :goodItem="item" :key="item.show.img" />
+    <good-item  v-for="(item, index) in pop" :goodItem="item" :key="index+item.show.img" />
 
   </el-row>
 </template>

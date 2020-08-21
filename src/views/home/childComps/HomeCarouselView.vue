@@ -3,7 +3,7 @@
     <el-carousel height="150px">
       <el-carousel-item v-for="item in banners" :key="item.image">
         <a :href="item.link">
-          <img :src="item.image" />
+          <img :src="item.image" @load="imgLoad"/>
         </a>
       </el-carousel-item>
     </el-carousel>
@@ -21,6 +21,20 @@
         }
       },
     },
+    data(){
+      return{
+        isLoad: false
+      }
+    },
+    methods:{
+      imgLoad(){
+        if(!this.isLoad){
+          this.$emit('imgLoad')
+          this.isLoad = !this.isLoad
+        }
+        
+      }
+    }
   }
 </script>
 
@@ -28,5 +42,5 @@
   .block img{
     width: 100%;
   }
-  
+
 </style>
